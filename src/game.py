@@ -216,7 +216,7 @@ class Window(pyglet.window.Window):
 
 
 def main():
-    window = Window(width=1600, height=1200, caption="Test Game", resizable=True)
+    _window = Window(width=1600, height=1200, caption="Test Game", resizable=True)
     glClearColor(0.5, 0.7, 1, 0.5)
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_CULL_FACE)
