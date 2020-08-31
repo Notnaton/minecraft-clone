@@ -4,6 +4,8 @@ from pyglet.window import FPSDisplay
 from pyglet.text import Label
 from opensimplex import OpenSimplex
 import math
+#import os
+#import sys
 
 class TextureHandler():
     def get_tex(self, file):
@@ -13,9 +15,10 @@ class TextureHandler():
         return pyglet.graphics.TextureGroup(texture)
 
     def __init__(self):
-        self.rock = (self.get_tex('../res/rock.png'),self.get_tex('../res/rock.png'),self.get_tex('../res/rock.png'))
-        self.dirt = (self.get_tex('../res/grass_bottom.png'),self.get_tex('../res/grass_bottom.png'),self.get_tex('../res/grass_bottom.png'))
-        self.grass = (self.get_tex('../res/grass_side.png'),self.get_tex('../res/grass_bottom.png'),self.get_tex('../res/grass_top.png'))
+        os_path = "c:/Users/anton/Documents/dev/minecraft-clone/src/"
+        self.rock = (self.get_tex(os_path + '../res/rock.png'),self.get_tex(os_path + '../res/rock.png'),self.get_tex(os_path + '../res/rock.png'))
+        self.dirt = (self.get_tex(os_path + '../res/grass_bottom.png'),self.get_tex(os_path + '../res/grass_bottom.png'),self.get_tex(os_path + '../res/grass_bottom.png'))
+        self.grass = (self.get_tex(os_path + '../res/grass_side.png'),self.get_tex(os_path + '../res/grass_bottom.png'),self.get_tex(os_path + '../res/grass_top.png'))
 
 
 class Renderer():
@@ -32,6 +35,8 @@ class Renderer():
                     else:
                         if(c == 1):
                             tex=self.tex.rock
+                        elif (c == 2):
+                            tex = self.tex.dirt
                         elif(c == 3):
                             tex=self.tex.grass
                         self.renderBlock((chunkPos[0]*16+x,chunkPos[1]*16+y,chunkPos[2]*16+z), tex)
@@ -98,10 +103,12 @@ class ChunkHandler():
         for y in range(16):
             for x in range(16):
                 for z in range(16):
-                    if (self.surface[x][y] == chunkPos[1]*16+z):
-                        self.chunkData[x][z][y] = 3
-                    elif(self.surface[x][y] >= chunkPos[1]*16 +z):
+                    if (self.surface[x][y] -2 > chunkPos[1]*16+z):
                         self.chunkData[x][z][y] = 1
+                    elif (self.surface[x][y] -2 <= chunkPos[1]*16+z and self.surface[x][y] > chunkPos[1]*16+z):
+                        self.chunkData[x][z][y] = 2
+                    elif (self.surface[x][y] == chunkPos[1]*16+z):
+                        self.chunkData[x][z][y] = 3
         return self.chunkData
 
 
@@ -152,7 +159,7 @@ class Window(pyglet.window.Window):
     def push(self, pos, rot): glPushMatrix(); glRotatef(-rot[0], 1, 0, 0); glRotatef(-rot[1], 0, 1, 0); glTranslatef(-pos[0], -pos[1], -pos[2])
     def Projection(self): glMatrixMode(GL_PROJECTION); glLoadIdentity()
     def Model(self): glMatrixMode(GL_MODELVIEW); glLoadIdentity()
-    def set2d(self): self.Projection(); gluOrtho2D(0, self.width, 0, self.height, 0); self.Model()
+    def set2d(self): self.Projection(); gluOrtho2D(0, self.width, 0, self.height); self.Model() #0, self.width, 0, self.height, 0
     def set3d(self): self.Projection(); gluPerspective(90, self.width/self.height, 0.05, 1000); self.Model()
     def setLock(self, state): self.lock = state; self.set_exclusive_mouse(state)
     lock = False; mouse_lock = property(lambda self:self.lock, setLock)
@@ -176,7 +183,7 @@ class Window(pyglet.window.Window):
         self.chunk = ChunkHandler()
         #self.chunk.generateChunk((0,0,0))
 
-        self.player = Player((1, 111, 2), (0, 0))
+        self.player = Player((1, 540, 2), (0, 0))
         self.renderer.chunkToRenderer(self.player.currentChunkPos)
 
     def on_mouse_motion(self, x, y, dx, dy):
