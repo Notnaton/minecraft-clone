@@ -4,8 +4,9 @@ from pyglet.window import FPSDisplay
 from pyglet.text import Label
 from opensimplex import OpenSimplex
 import math
-#import os
-#import sys
+import sys
+sys.path.append("C:/Users/anton/Documents/dev/minecraft-clone/lib")
+import chunkgen
 
 class TextureHandler():
     def get_tex(self, file):
@@ -15,7 +16,7 @@ class TextureHandler():
         return pyglet.graphics.TextureGroup(texture)
 
     def __init__(self):
-        os_path = "c:/Users/anton/Documents/dev/minecraft-clone/src/"
+        os_path = "c:/Users/anton/Documents/dev/minecraft-clone/" + "src/"
         self.rock = (self.get_tex(os_path + '../res/rock.png'),self.get_tex(os_path + '../res/rock.png'),self.get_tex(os_path + '../res/rock.png'))
         self.dirt = (self.get_tex(os_path + '../res/grass_bottom.png'),self.get_tex(os_path + '../res/grass_bottom.png'),self.get_tex(os_path + '../res/grass_bottom.png'))
         self.grass = (self.get_tex(os_path + '../res/grass_side.png'),self.get_tex(os_path + '../res/grass_bottom.png'),self.get_tex(os_path + '../res/grass_top.png'))
@@ -216,6 +217,9 @@ class Window(pyglet.window.Window):
 
 
 def main():
+    
+    print(chunkgen.sum_as_string(1,2))
+
     _window = Window(width=1600, height=1200, caption="Test Game", resizable=True)
     glClearColor(0.5, 0.7, 1, 0.5)
     glEnable(GL_DEPTH_TEST)
